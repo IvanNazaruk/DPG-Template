@@ -1,0 +1,5 @@
+DearPyGui-DragAndDrop
+dearpygui
+annotated-types
+numpy
+pillow
