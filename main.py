@@ -1,30 +1,43 @@
 import dearpygui.dearpygui as dpg
-import DearPyGui_DragAndDrop as dpg_dnd
-
-import DearPyGui_Animations as dpg_anim
-import DearPyGui_Theme as dpg_theme
-import fonts
-import settings
 
 dpg.create_context()
-dpg_dnd.initialize()
-dpg.bind_theme(dpg_theme.initialize())
-dpg.bind_font(fonts.load(show=False))
-settings.load_settings()
+dpg.create_viewport(title="Demo WIP", width=600, height=300, x_pos=1920 // 2 - 300, y_pos=1080 // 2 - 400)
 
 
 def main():
-    import gui
-    main_widow = gui.MainWindow()
-    dpg.set_primary_window(main_widow.window, True)
+    from gui import MainWindow
+    main_window = MainWindow()
+    dpg.set_primary_window(main_window.window, True)
 
 
-dpg.set_frame_callback(1, main)
+import sys
+
+if sys.platform.startswith('win'):
+    import ctypes
+
+    ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(u'CompanyName.ProductName.SubProduct.VersionInformation')
+    ctypes.windll.shcore.SetProcessDpiAwareness(1)
+
+dpg.configure_viewport(0, clear_color=(255, 255, 255))
 dpg.setup_dearpygui()
-dpg.create_viewport(title="Demo WIP", width=fonts.font_size * 30, height=fonts.font_size * 25,
-                    clear_color=dpg_theme.get_current_theme_color_value(dpg.mvThemeCol_WindowBg))
 dpg.show_viewport()
+dpg.render_dearpygui_frame()
 
+import DearPyGui_DragAndDrop as dpg_dnd
+
+import DPG_modules.Animations as dpg_anim
+import DPG_modules.Theme as dpg_theme
+from DPG_modules.Addons.title_bar import set_dark_mode
+from Resources import fonts, settings
+
+dpg_dnd.initialize()
+settings.load_settings()
+dpg.bind_font(fonts.load(show=False))
+dpg.bind_theme(dpg_theme.initialize())
+
+set_dark_mode(True)
+
+dpg.set_frame_callback(dpg.get_frame_count() + 1, main)
 while dpg.is_dearpygui_running():
     dpg_anim.update()
     dpg.render_dearpygui_frame()
